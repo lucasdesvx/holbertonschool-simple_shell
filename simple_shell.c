@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <string.h>
 
 extern char **environ;
 
@@ -12,21 +12,22 @@ int main(void)
     size_t len = 0;
     ssize_t nread;
     pid_t pid;
-    int i;
 
     while (1)
     {
-        printf("#cisfun$ ");
-	fflush(stdout);
+	    printf("#cisfun$ ");
+	    fflush(stdout);
 
         nread = getline(&line, &len, stdin);
+        
         if (nread == -1)
         {
             free(line);
             printf("\n");
             exit(0);
         }
-        for (i = 0; line[i]; i++)
+
+        for (int i = 0; line[i]; i++)
         {
             if (line[i] == '\n')
             {
@@ -34,17 +35,28 @@ int main(void)
                 break;
             }
         }
+        if (line[0] == '\0')
+            continue;
+
         pid = fork();
         if (pid == 0)
         {
-            char *argv[2];
-            argv[0] = line;
-            argv[1] = NULL;
-	    if (execve(line,argv,environ) == -1)
-                perror("./shell");
-            exit(1);
+            if (execve(line, &line, environ) == -1)
+            {
+                perror("./shell: command not found");
+                exit(1);
+            }
+        }
+        else if (pid > 0)
+        {
+            wait(NULL);
         }
         else
-            wait(NULL);
+        {
+            perror("fork");
+            exit(1);
+        }
     }
+    free(line);
+    return 0;
 }
