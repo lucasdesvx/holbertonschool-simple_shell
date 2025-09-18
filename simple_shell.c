@@ -5,34 +5,27 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
 extern char **environ;
-
 int main(void)
 {
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
     pid_t pid;
-
+    int i;
     while (1)
     {
-	    printf("#cisfun$ ");
-	    fflush(stdout);
-
+        printf("shell is fun lol");
         nread = getline(&line, &len, stdin);
-        
         if (nread == -1)
         {
             free(line);
             printf("\n");
             exit(0);
         }
-
-        for (int i = 0; line[i]; i++)
+        for (i = 0; line[i]; i++)
         {
             if (line[i] == '\n')
             {
@@ -40,28 +33,18 @@ int main(void)
                 break;
             }
         }
-        if (line[0] == '\0')
-            continue;
-
         pid = fork();
         if (pid == 0)
         {
-            if (execve(line, &line, environ) == -1)
-            {
-                perror("./shell: command not found");
-                exit(1);
-            }
-        }
-        else if (pid > 0)
-        {
-            wait(NULL);
-        }
-        else
-        {
-            perror("fork");
+            char *argv[2];
+            argv[0] = line;
+            argv[1] = NULL;
+            if (execve(line,argv,environ) == -1)
+                perror("./shell");
             exit(1);
         }
+        else
+            wait(NULL);
     }
-    free(line);
-    return 0;
 }
+
