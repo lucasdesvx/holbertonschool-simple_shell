@@ -1,3 +1,8 @@
+ /* simple_shell.c
+  2  * Super simple shell: run commands only when the user types the full path.
+  3  * Compile: gcc -std=gnu11 -Wall -Wextra -o simple_shell simple_shell.c
+  4  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
