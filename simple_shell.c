@@ -17,7 +17,7 @@ int main(void)
     int i;
     while (1)
     {
-        printf("shell is fun lol");
+        printf("shell is fun");
         nread = getline(&line, &len, stdin);
         if (nread == -1)
         {
