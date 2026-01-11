@@ -6,9 +6,9 @@
 extern char **environ;
 
 /**
- * main - Le simple shell
+ * main - le simple shell
  *
- * Return: Always 0
+ * Return: always 0
  */
 
 int main(void)
@@ -26,22 +26,31 @@ int main(void)
 
 		if (getline(&ligne, &longueur, stdin) == -1)
 		{
-			write(1, "\n", 1);
+			if (isatty(STDIN_FILENO))
+				write(1, "\n", 1);
 			free(ligne);
 			exit(0);
 		}
 
-		for (i = 0; ligne[i]; i++)
+		for (i = 0; ligne[i] != '\0'; i++)
+		{
 			if (ligne[i] == '\n')
 			{
 				ligne[i] = '\0';
 				break;
 			}
+		}
 
 		if (ligne[0] == '\0')
 			continue;
 
 		pid = fork();
+		if (pid == -1)
+		{
+			perror("fork");
+			continue;
+		}
+
 		if (pid == 0)
 		{
 			char *argv[2];
@@ -49,11 +58,18 @@ int main(void)
 			argv[0] = ligne;
 			argv[1] = NULL;
 
-			execve(ligne, argv, environ);
-			perror(ligne);
-			exit(1);
+			if (execve(ligne, argv, environ) == -1)
+			{
+				perror(ligne);
+				free(ligne);
+				exit(1);
+			}
 		}
 		else
+		{
 			wait(&status);
+		}
 	}
+	free(ligne);
+	return (0);
 }
