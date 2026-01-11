@@ -1,28 +1,28 @@
 #include "shell.h"
 
-char *parse_line(char *ligne)
+int main(int argc, char **argv)
 {
-	int i = 0;
-	char *command;
+	char *ligne = NULL, *command;
+	size_t longueur = 0;
+	(void)argc;
 
-	while (ligne[i])
+	while (1)
 	{
-		if (ligne[i] == '\n')
-			ligne[i] = '\0';
-		i++;
-	}
-	command = ligne;
-	while (*command == ' ' || *command == '\t')
-		command++;
-	if (*command == '\0')
-		return (NULL);
-	for (i = 0; command[i] != '\0'; i++)
-	{
-		if (command[i] == ' ' || command[i] == '\t')
+		if (isatty(STDIN_FILENO))
+			write(1, "#cisfun$ ", 9);
+
+		if (getline(&ligne, &longueur, stdin) == -1)
 		{
-			command[i] = '\0';
-			break;
+			if (isatty(STDIN_FILENO))
+				write(1, "\n", 1);
+			free(ligne);
+			exit(0);
 		}
+
+		command = parse_line(ligne);
+		if (command != NULL)
+			execute_cmd(command, ligne, argv);
 	}
-	return (command);
+	free(ligne);
+	return (0);
 }

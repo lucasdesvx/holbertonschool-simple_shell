@@ -1,48 +1,28 @@
 #include "shell.h"
 
-int main(int argc, char **argv)
+char *parse_line(char *ligne)
 {
-	char *ligne = NULL, *command;
-	size_t longueur = 0;
-	pid_t pid;
-	int status;
-	char *args[2];
-	(void)argc;
+	int i = 0;
+	char *command;
 
-	while (1)
+	while (ligne[i])
 	{
-		if (isatty(STDIN_FILENO))
-			write(1, "#cisfun$ ", 9);
-		if (getline(&ligne, &longueur, stdin) == -1)
-		{
-			if (isatty(STDIN_FILENO))
-				write(1, "\n", 1);
-			free(ligne);
-			exit(0);
-		}
-		command = parse_line(ligne);
-		if (command == NULL)
-			continue;
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			continue;
-		}
-		if (pid == 0)
-		{
-			args[0] = command;
-			args[1] = NULL;
-			if (execve(command, args, environ) == -1)
-			{
-				perror(argv[0]);
-				free(ligne);
-				exit(1);
-			}
-		}
-		else
-			wait(&status);
+		if (ligne[i] == '\n')
+			ligne[i] = '\0';
+		i++;
 	}
-	free(ligne);
-	return (0);
+	command = ligne;
+	while (*command == ' ' || *command == '\t')
+		command++;
+	if (*command == '\0')
+		return (NULL);
+	for (i = 0; command[i] != '\0'; i++)
+	{
+		if (command[i] == ' ' || command[i] == '\t')
+		{
+			command[i] = '\0';
+			break;
+		}
+	}
+	return (command);
 }

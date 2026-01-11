@@ -11,5 +11,6 @@
 extern char **environ;
 
 char *parse_line(char *ligne);
+void execute_cmd(char *command, char *ligne, char **argv);
 
 #endif
