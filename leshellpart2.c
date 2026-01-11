@@ -1,36 +1,35 @@
 #include "shell.h"
 
 /**
- * analyze_line - cleans the input line and extracts the command
- * @i: variable
- * @command: pointer
- *
- * Return: to analyze_line
+ * execute_cmd - Creates a child process and executes a command.
+ * @command: The cleaned command string to execute.
+ * @line: The original buffer to be freed on error.
+ * @argv: The program's arguments used for error messages.
  */
 
-char *analyze_line(char *ligne)
+void execute_cmd(char *command, char *line, char **argv)
 {
-	int i = 0;
-	char *command;
+	pid_t pid;
+	int status;
+	char *args[2];
 
-	while (ligne[i])
+	pid = fork();
+	if (pid == -1)
 	{
-		if (ligne[i] == '\n')
-			ligne[i] = '\0';
-		i++;
+		perror("fork");
+		return;
 	}
-	command = ligne;
-	while (*command == ' ' || *command == '\t')
-		command++;
-	if (*command == '\0')
-		return (NULL);
-	for (i = 0; command[i] != '\0'; i++)
+	if (pid == 0)
 	{
-		if (command[i] == ' ' || command[i] == '\t')
+		args[0] = command;
+		args[1] = NULL;
+		if (execve(command, args, environ) == -1)
 		{
-			command[i] = '\0';
-			break;
+			perror(argv[0]);
+			free(line);
+			exit(1);
 		}
 	}
-	return (command);
+	else
+		wait(&status);
 }

@@ -6,11 +6,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
-#include <sys/types.h>
 
 extern char **environ;
 
-char *analyze_line(char *ligne);
-void execute_commande(char *command, char *ligne, char **argv);
+char *parse_line(char *line);
+void execute_cmd(char *command, char *line, char **argv);
 
 #endif

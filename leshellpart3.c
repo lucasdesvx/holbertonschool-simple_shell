@@ -1,37 +1,35 @@
 #include "shell.h"
 
 /**
- * execute_commande - Creates a child process and executes a command
- * @command: pointer
- * @ligne: pointer
- * @argv: double pointer
+ * parse_line - Cleans the input line and extracts the command.
+ * @line: The raw string read from stdin.
  *
- * Return: to execute_commande
+ * Return: Pointer to the start of the command, or NULL if empty.
  */
 
-void execute_commande(char *command, char *ligne, char **argv)
+char *parse_line(char *line)
 {
-	pid_t pid;
-	int status;
-	char *args[2];
+	int i = 0;
+	char *command;
 
-	pid = fork();
-	if (pid == -1)
+	while (line[i])
 	{
-		perror("fork");
-		return;
+		if (line[i] == '\n')
+			line[i] = '\0';
+		i++;
 	}
-	if (pid == 0)
+	command = line;
+	while (*command == ' ' || *command == '\t')
+		command++;
+	if (*command == '\0')
+		return (NULL);
+	for (i = 0; command[i] != '\0'; i++)
 	{
-		args[0] = command;
-		args[1] = NULL;
-		if (execve(command, args, environ) == -1)
+		if (command[i] == ' ' || command[i] == '\t')
 		{
-			perror(argv[0]);
-			free(ligne);
-			exit(1);
+			command[i] = '\0';
+			break;
 		}
 	}
-	else
-		wait(&status);
+	return (command);
 }

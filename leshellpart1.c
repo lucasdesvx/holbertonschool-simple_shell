@@ -1,17 +1,17 @@
 #include "shell.h"
 
 /**
- * main - mon shell
- * @argc: variable
- * @argv: double pointer
+ * main - Entry point for the simple shell.
+ * @argc: Argument count (unused).
+ * @argv: Argument vector.
  *
- * Return: always 0
+ * Return: Always 0 on success.
  */
 
 int main(int argc, char **argv)
 {
-	char *ligne = NULL, *command;
-	size_t longueur = 0;
+	char *line = NULL, *command;
+	size_t length = 0;
 	(void)argc;
 
 	while (1)
@@ -19,18 +19,18 @@ int main(int argc, char **argv)
 		if (isatty(STDIN_FILENO))
 			write(1, "#cisfun$ ", 9);
 
-		if (getline(&ligne, &longueur, stdin) == -1)
+		if (getline(&line, &length, stdin) == -1)
 		{
 			if (isatty(STDIN_FILENO))
 				write(1, "\n", 1);
-			free(ligne);
+			free(line);
 			exit(0);
 		}
 
-		command = analyze_line(ligne);
+		command = parse_line(line);
 		if (command != NULL)
-			execute_commande(command, ligne, argv);
+			execute_cmd(command, line, argv);
 	}
-	free(ligne);
+	free(line);
 	return (0);
 }
