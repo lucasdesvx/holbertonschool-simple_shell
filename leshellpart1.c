@@ -1,5 +1,13 @@
 #include "shell.h"
 
+/**
+ * main - mon shell
+ * @argc: variable
+ * @argv: double pointer
+ *
+ * Return: always 0
+ */  
+
 int main(int argc, char **argv)
 {
 	char *ligne = NULL, *command;
@@ -19,9 +27,9 @@ int main(int argc, char **argv)
 			exit(0);
 		}
 
-		command = parse_line(ligne);
+		command = analyze_line(ligne);
 		if (command != NULL)
-			execute_cmd(command, ligne, argv);
+			execute_commande(command, ligne, argv);
 	}
 	free(ligne);
 	return (0);

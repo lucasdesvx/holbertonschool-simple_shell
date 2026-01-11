@@ -1,6 +1,14 @@
 #include "shell.h"
 
-char *parse_line(char *ligne)
+/**
+ * analyze_line - cleans the input line and extracts the command
+ * @i: variable
+ * @command: pointer
+ *
+ * Return: to analyze_line
+ */
+
+char *analyze_line(char *ligne)
 {
 	int i = 0;
 	char *command;

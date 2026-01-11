@@ -1,6 +1,15 @@
 #include "shell.h"
 
-void execute_cmd(char *command, char *ligne, char **argv)
+/**
+ * execute_commande - Creates a child process and executes a command
+ * @command: pointer
+ * @ligne: pointer
+ * @argv: double pointer
+ *
+ * Return: to execute_commande
+ */
+
+void execute_commande(char *command, char *ligne, char **argv)
 {
 	pid_t pid;
 	int status;
