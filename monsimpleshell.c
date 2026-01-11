@@ -6,9 +6,9 @@
 extern char **environ;
 
 /**
- * main - le simple shell
+ * main - Un shell simple capable de gérer les espaces avant/après la commande.
  *
- * Return: always 0
+ * Return: Toujours 0 en cas de succès.
  */
 
 int main(void)
@@ -17,7 +17,7 @@ int main(void)
 	size_t longueur = 0;
 	pid_t pid;
 	int status;
-	int i;
+	int inside, start, end;
 
 	while (1)
 	{
@@ -32,16 +32,27 @@ int main(void)
 			exit(0);
 		}
 
-		for (i = 0; ligne[i] != '\0'; i++)
+		for (inside = 0; ligne[inside]; inside++)
 		{
-			if (ligne[i] == '\n')
+			if (ligne[inside] == '\n')
 			{
-				ligne[i] = '\0';
+				ligne[inside] = '\0';
 				break;
 			}
 		}
 
-		if (ligne[0] == '\0')
+		start = 0;
+		while (ligne[start] == ' ')
+			start++;
+
+		end = inside - 1;
+		while (end >= start && ligne[end] == ' ')
+		{
+			ligne[end] = '\0';
+			end--;
+		}
+
+		if (ligne[start] == '\0')
 			continue;
 
 		pid = fork();
@@ -55,12 +66,12 @@ int main(void)
 		{
 			char *argv[2];
 
-			argv[0] = ligne;
+			argv[0] = &ligne[start];
 			argv[1] = NULL;
 
-			if (execve(ligne, argv, environ) == -1)
+			if (execve(argv[0], argv, environ) == -1)
 			{
-				perror(ligne);
+				perror(argv[0]);
 				free(ligne);
 				exit(1);
 			}
