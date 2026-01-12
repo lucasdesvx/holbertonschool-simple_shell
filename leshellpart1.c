@@ -2,8 +2,8 @@
 
 /**
  * main - Entry point for the simple shell.
- * @argc: Argument count (unused).
- * @argv: Argument vector.
+ * @argc: Argument count
+ * @argv: Argument vector
  *
  * Return: Always 0 on success.
  */
