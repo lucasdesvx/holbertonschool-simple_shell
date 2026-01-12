@@ -1,0 +1,3 @@
+simple_shell is a minimal UNIX command interpreter that displays a prompt, reads one command from
+standard input, executes it in a child process using fork and execve, repeats the process after each
+execution, and exits cleanly on end of file (Ctrl+D)
